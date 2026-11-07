@@ -336,5 +336,11 @@
   "Última comprobación: {0}": "Last checked: {0}",
   "El sistema no admite {0} baudios en {1}.": "The system doesn't support {0} baud on {1}.",
   "el puerto está en uso por otra aplicación": "the port is in use by another app",
-  "el puerto está cerrado": "the port is closed"
+  "el puerto está cerrado": "the port is closed",
+  "Falta Microsoft Edge WebView2 Runtime, que Ledly usa para su ventana. La interfaz se abrirá en el navegador; para tenerla en su propia ventana, instala WebView2 Runtime desde la web de Microsoft.": "Microsoft Edge WebView2 Runtime, which Ledly uses for its window, is missing. The interface will open in the browser; to have it in its own window, install WebView2 Runtime from Microsoft's website.",
+  "No se puede mostrar la ventana de Ledly ({0}). Se abrirá en el navegador.": "Can't show the Ledly window ({0}). It will open in the browser.",
+  "La actualización descargada no contiene Ledly.exe.": "The downloaded update doesn't contain Ledly.exe.",
+  "No se puede escribir en {0}.": "Can't write to {0}.",
+  "No se sabe dónde está instalado Ledly.": "Can't tell where Ledly is installed.",
+  "No se pudo iniciar la actualización.": "Couldn't start the update."
 }

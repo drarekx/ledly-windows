@@ -16,7 +16,10 @@ public enum UpdateStateKind { idle, checking, downloading, installing }
 public sealed class Updater
 {
     public const string Repo = "drarekx/ledly-windows";
-    public const string AssetName = "Ledly-win-x64.zip";
+    /// <summary>Package for this machine's architecture.</summary>
+    public static readonly string AssetName =
+        System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64
+            ? "Ledly-win-arm64.zip" : "Ledly-win-x64.zip";
     static readonly TimeSpan CheckInterval = TimeSpan.FromHours(24);
     static Updater? _shared;
     public static Updater Shared => _shared ?? throw new InvalidOperationException("Updater.Start first");
