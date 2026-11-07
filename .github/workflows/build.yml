@@ -1,0 +1,57 @@
+name: Build
+
+# Builds the solution and publishes Ledly.exe (win-x64) on every pull request and push to main,
+# and checks that the translation tables parse and have the same keys.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Check translations
+        shell: pwsh
+        run: |
+          $files = Get-ChildItem web/i18n/*.json -ErrorAction SilentlyContinue
+          if (-not $files) { Write-Host "No web/i18n tables yet"; exit 0 }
+          $tables = @{}
+          foreach ($f in $files) {
+            try { $tables[$f.BaseName] = (Get-Content -Raw -Encoding utf8 $f.FullName | ConvertFrom-Json -AsHashtable) }
+            catch { Write-Error "$($f.Name) is not valid JSON: $_"; exit 1 }
+          }
+          $bad = $false
+          if ($tables.ContainsKey("en") -and $tables.ContainsKey("ca")) {
+            foreach ($k in $tables["en"].Keys) { if (-not $tables["ca"].ContainsKey($k)) { Write-Host "Only in en: $k"; $bad = $true } }
+            foreach ($k in $tables["ca"].Keys) { if (-not $tables["en"].ContainsKey($k)) { Write-Host "Only in ca: $k"; $bad = $true } }
+          }
+          if ($bad) { exit 1 }
+
+      - name: Build solution
+        run: dotnet build Ledly.slnx -c Release
+
+      - name: Publish
+        shell: pwsh
+        run: ./build.ps1 -Version "0.0.0-dev.${{ github.run_number }}" -Runtime win-x64
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Ledly-win-x64
+          path: |
+            build/Ledly-win-x64.zip
+            build/Ledly-win-x64.zip.sha256

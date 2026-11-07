@@ -18,6 +18,25 @@ C# / .NET 10. Tres proyectos (`Ledly.slnx`):
 - Lo que cambia por sistema pasa por `IPlatform` (`src/Ledly.Core/Platform/IPlatform.cs`).
 - Hilos: el bucle de salida vive en `EngineQueue` (hilo propio a 50 Hz). `Settings` es seguro entre hilos y avisa con `Changed`. `LEDEngine` publica estado con `StateChanged` y colores con `FrameReady` (solo con oyentes).
 
+## App de Windows (`src/Ledly`)
+
+TFM con el SDK 22621 (proyección de `IsBorderRequired`) y `SupportedOSPlatformVersion` 19041: corre desde Windows 10 2004. WinForms; única dependencia NuGet `Microsoft.Web.WebView2`. Publicación autocontenida de un solo `Ledly.exe` (win-x64 y win-arm64). Interop COM/D3D11 escrito a mano (punteros a función sobre la vtable; los números de ranura siguen `d3d11.h`). `InvariantGlobalization` desactivado para que el idioma siga al de Windows.
+
+| Archivo | Qué hace |
+|---|---|
+| `Program.cs` | CLI (`--flash`/`--read-flash` con la consola del padre), instancia única (mutex + evento con nombre: la segunda copia pide mostrar la ventana), `timeBeginPeriod(1)`, arranque del núcleo, bucle WinForms, `--background` (inicio con Windows) |
+| `App/TrayApp.cs` | Icono y menú del área de notificación (como el menú de barra de Mac), ventana, suspensión, cierre de sesión |
+| `App/MainWindow.cs` | WebView2 con `APIServer.LocalUrl`; cerrar = ocultar (y suspender la página); enlaces externos al navegador; recuerda tamaño (`window.json`). Sin runtime de WebView2, abre la interfaz en el navegador |
+| `App/TrayIcons.cs`, `App/PowerWatcher.cs` | Icono dibujado (arcoíris / gris, sigue el tema de la barra) · suspensión y pantallas apagadas → `LEDEngine.SetSleeping` (bloquear la sesión no cuenta) |
+| `Capture/ScreenCapture.cs` | `IScreenCapture`: pantalla o ventana mayor de la app (revisada cada 2 s), reintentos, eventos fuera del candado |
+| `Capture/WgcSession.cs` | Windows.Graphics.Capture + reducción en GPU (copia con mipmaps, `GenerateMips`, nivel ≈256 px a una textura staging) |
+| `Capture/GdiSession.cs` | Respaldo GDI (`StretchBlt` HALFTONE / `PrintWindow`) |
+| `Audio/WasapiLoopback.cs` | WASAPI loopback de la salida predeterminada, sondeo cada 10 ms, silencio cuando no suena nada, sigue el cambio de dispositivo |
+| `Platform/*.cs` | `WindowsPlatform` (`IPlatform`), pantallas (DisplayConfig), ventanas/apps, puertos COM (SetupAPI), instalar actualizaciones (PowerShell oculto que espera, copia y relanza) |
+| `Interop/*.cs` | P/Invoke Win32, D3D11 y WinRT (`IGraphicsCaptureItemInterop`, `IDirect3DDxgiInterfaceAccess`) |
+
+El icono (`Ledly.ico`) lo genera `tools/make-icon.py`. Datos en `%APPDATA%\Ledly`; caché de WebView2 en `%LOCALAPPDATA%\Ledly\WebView2`.
+
 ## Compilar y ejecutar
 
 ```sh
