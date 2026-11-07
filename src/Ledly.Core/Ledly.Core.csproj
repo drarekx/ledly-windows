@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Ledly</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.IO.Ports" Version="9.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Web UI, served by the API at / -->
+    <EmbeddedResource Include="../../web/**/*" LogicalName="web/%(RecursiveDir)%(Filename)%(Extension)" />
+    <!-- Firmware for every data pin -->
+    <EmbeddedResource Include="../../firmware/hex/*.hex" LogicalName="firmware/%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>
