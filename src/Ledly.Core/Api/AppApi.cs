@@ -306,7 +306,7 @@ public sealed partial class APIServer
                 ["id"] = e.ToString(),
                 ["titleKey"] = e.TitleKey(),
                 ["music"] = e.IsMusic(),
-                ["usesColor"] = UsesColor(e),
+                ["usesColor"] = e.UsesColor(),
                 ["wled"] = WledNumber(e),
             }).ToArray())),
             ["equalizer"] = new JsonObject
@@ -419,9 +419,9 @@ public sealed partial class APIServer
         if (preview is not { } p) return new HttpResponse(204);
         var response = new HttpResponse(200, "image/png", p.Png);
         var r = p.Content;
-        int X(double v) => (int)Math.Round(v * p.Width);
-        int Y(double v) => (int)Math.Round(v * p.Height);
-        response.Headers["X-Content-Rect"] = string.Create(CultureInfo.InvariantCulture, $"{X(r.X)},{Y(r.Y)},{X(r.Width)},{Y(r.Height)}");
+        // Content is already in the image's pixels.
+        static int I(double v) => (int)Math.Round(v);
+        response.Headers["X-Content-Rect"] = string.Create(CultureInfo.InvariantCulture, $"{I(r.X)},{I(r.Y)},{I(r.Width)},{I(r.Height)}");
         response.Headers["X-Image-Size"] = string.Create(CultureInfo.InvariantCulture, $"{p.Width},{p.Height}");
         response.Headers["Cache-Control"] = "no-cache";
         response.Headers["Access-Control-Expose-Headers"] = "X-Content-Rect, X-Image-Size";

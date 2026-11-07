@@ -417,7 +417,7 @@ public sealed partial class APIServer
             case ("GET", "/api/effects"):
                 return HttpResponse.Json(new JsonArray(EffectKindInfo.Ordered.Select(e => (JsonNode)new JsonObject
                 {
-                    ["id"] = e.ToString(), ["name"] = L.Tr(e.TitleKey()), ["usesColor"] = UsesColor(e),
+                    ["id"] = e.ToString(), ["name"] = L.Tr(e.TitleKey()), ["usesColor"] = e.UsesColor(),
                 }).ToArray()));
             case ("GET", "/api/leds"):
             {
@@ -667,9 +667,6 @@ public sealed partial class APIServer
         _ => $"error: {status.Message}",
     };
 
-    /// <summary>Effects that use the main color (same list as the Mac app's EffectKind.usesColor).</summary>
-    static bool UsesColor(EffectKind kind) => kind is EffectKind.breath or EffectKind.knightRider or EffectKind.strobe
-        or EffectKind.sparks or EffectKind.snake or EffectKind.colorWipe or EffectKind.meteor or EffectKind.colorWaves or EffectKind.notify;
 
     // MARK: - WLED compatibility
 

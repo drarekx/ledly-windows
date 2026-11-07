@@ -342,5 +342,6 @@
   "La actualización descargada no contiene Ledly.exe.": "The downloaded update doesn't contain Ledly.exe.",
   "No se puede escribir en {0}.": "Can't write to {0}.",
   "No se sabe dónde está instalado Ledly.": "Can't tell where Ledly is installed.",
-  "No se pudo iniciar la actualización.": "Couldn't start the update."
+  "No se pudo iniciar la actualización.": "Couldn't start the update.",
+  "Elige primero el puerto del Arduino.": "Choose the Arduino's port first."
 }
