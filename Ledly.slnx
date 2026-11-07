@@ -2,5 +2,6 @@
   <Folder Name="/src/">
     <Project Path="src/Ledly.Core/Ledly.Core.csproj" />
     <Project Path="src/Ledly.Dev/Ledly.Dev.csproj" />
+    <Project Path="src/Ledly/Ledly.csproj" />
   </Folder>
 </Solution>
