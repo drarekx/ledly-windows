@@ -74,3 +74,6 @@ The existing WebSocket `/api/ws` is reused. Besides the Mac API's messages, the 
 100 ms) to clients that sent `{"subscribe":"app"}`, and `{"type":"colors","colors":["#RRGGBB",…]}`
 (~15 fps) to clients that sent `{"subscribe":"colors"}` (each such client counts as a
 `LEDEngine.AddColorListener()` until it unsubscribes or disconnects). The UI also polls status as a fallback.
+
+`{"subscribe":"app"}` clients also get `{"type":"app-settings","settings":{…same object as GET /api/app/settings…}}`
+right after subscribing and whenever a setting changes (debounced 100 ms).
