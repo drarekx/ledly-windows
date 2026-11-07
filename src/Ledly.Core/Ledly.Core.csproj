@@ -9,7 +9,7 @@
   </ItemGroup>
   <ItemGroup>
     <!-- Web UI, served by the API at / -->
-    <EmbeddedResource Include="../../web/**/*" LogicalName="web/%(RecursiveDir)%(Filename)%(Extension)" />
+    <EmbeddedResource Include="../../web/**/*" LogicalName="web/$([System.String]::Copy('%(RecursiveDir)').Replace('\','/'))%(Filename)%(Extension)" />
     <!-- Firmware for every data pin -->
     <EmbeddedResource Include="../../firmware/hex/*.hex" LogicalName="firmware/%(Filename)%(Extension)" />
   </ItemGroup>
